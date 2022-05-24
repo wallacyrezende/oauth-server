@@ -1,6 +1,5 @@
 package com.dev.finance.oauthserver.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,16 +10,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserDetailsService userDetailService;
 
-    private final UserDetailsService userDetailsService;
+    public SecurityConfig(BCryptPasswordEncoder passwordEncoder, UserDetailsService userDetailService) {
+        this.passwordEncoder = passwordEncoder;
+        this.userDetailService = userDetailService;
+    }
 
     @Override
-    protected final void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+    @Autowired
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder);
     }
 
     @Override

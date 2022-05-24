@@ -1,6 +1,8 @@
 package com.dev.finance.oauthserver.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,24 +16,19 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
+@EqualsAndHashCode
 public class User implements UserDetails, Serializable {
 
     private Long id;
     private String name;
     private String email;
     private String password;
-
     private Set<Role> roles = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(x -> new SimpleGrantedAuthority(x.getRoleName()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getPassword() {
-        return null;
+        return this.roles.stream().map(role -> new SimpleGrantedAuthority(role.getRoleName())).collect(Collectors.toList());
     }
 
     @Override
